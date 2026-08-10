@@ -61,7 +61,7 @@ A console window will appear showing detailed licensing and connection logs, and
 The application is currently in an open Beta phase. A hardcoded Dateguard allows the app to run freely without a key until **January 1, 2027**.
 
 The bottom-right corner of the dashboard will display the current status:
-`v260804 | License valid till Jan 01, 2027`
+`v260810 | License valid till Jan 01, 2027`
 
 ### Detailed License Logging
 The application now provides detailed console logging for both the DateGuard and License verification steps, including:
@@ -75,7 +75,6 @@ In **Setup Mode**, click the **🔑 Request License** button in the header to op
 
 ### Post-Beta Activation
 After January 1, 2027, the application will enforce its secure licensing system and will require a valid license key to run.
-* **Embedded Public Key:** The `public_key.pem` file is now securely embedded inside the `.exe` during the build process, ensuring license verification always uses the developer's master key.
 * If you need a license key after the Beta period, please contact the developer.
 
 ---
@@ -211,16 +210,15 @@ The server listens on `0.0.0.0`, allowing access from smartphones, tablets, or o
 ### 🛡️ Smart UI Features
 - **Smart Shutdown Button:** Hidden on mobile devices to prevent accidental server shutdowns.
 - **Mobile Setup Restriction:** Setup controls are hidden on mobile to keep the interface clean.
-- **Version Tag:** A small tag in the bottom-right corner (e.g., `v260804 | License valid till Jan 01, 2027`) tracks the version and beta status.
+- **Version Tag:** A small tag in the bottom-right corner (e.g., `v260810 | License valid till Jan 01, 2027`) tracks the version and beta status.
 
 ### 🔒 Security & File Locations
 - **Never share your `.env` file** — it contains your Control4 credentials.
-- **Embedded Public Key:** The `public_key.pem` file is now securely embedded inside the `.exe` during the build process, ensuring license verification always uses the developer's master key. Users cannot tamper with it.
 - The `.exe` looks for config files in the **same folder** as itself. If you move the `.exe`, you must move the `.env` and `dashboard_config.json` with it.
-- The `templates/dashboard.html` and `public_key.pem` files are now **embedded inside the .exe** and do not need to be distributed separately.
+- The `templates/dashboard.html` file is now **embedded inside the .exe** and do not need to be distributed separately.
 
 ### 🔄 Updates
-- When a new version of `C4DashboardTool.exe` is released, simply replace the old `.exe` with the new one. Keep your existing `.env` and `dashboard_config.json` files.
+- When a new version of `C4DashboardToolexp_xxxxxx.exe` is released, simply replace the old `.exe` with the new one. Keep your existing `.env` and `dashboard_config.json` files.
 
 ---
 
