@@ -264,9 +264,8 @@ Inspired by the brilliant work of #lawtancool and his predecessors. Uses some co
 
 ---
 
-## 💡 Alternative way to run the application
-
-DOCKER image - visit andebox/c4dashboardtoolexp to get an image.
+💡 Alternative way to run the application
+DOCKER image — visit [andebox/c4dashboardtoolexp](https://hub.docker.com/r/andebox/c4dashboardtoolexp) to get an image.
 
 
 
