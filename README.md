@@ -264,6 +264,12 @@ Inspired by the brilliant work of #lawtancool and his predecessors. Uses some co
 
 ---
 
+## 💡 Alternative way to run the application
+
+DOCKER image - visit andebox/c4dashboardtoolexp to get an image.
+
+
+
 ## 📄 License
 
 Free for personal use during the Beta period (valid until Jan 1, 2027). The application includes a secure licensing framework designed for authorized usage post-Beta.
