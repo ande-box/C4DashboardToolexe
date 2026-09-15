@@ -280,7 +280,7 @@ This project is **unofficial** and not affiliated with, endorsed by, or supporte
 
 ## 💡 Thanks to ->>
 
-Inspired by the brilliant work of #lawtancool and his predecessors. Uses some code from https://github.com/lawtancool/pyControl4. Made by Qwen AI under human supervision.
+Inspired by the brilliant work of #lawtancool and his predecessors. Uses some code from https://github.com/lawtancool/pyControl4. Made by Qwen AI under a human supervision.
 
 ---
 
