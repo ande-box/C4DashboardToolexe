@@ -4,6 +4,8 @@ A standalone Windows application for monitoring and controlling your **Control4*
 
 > **🔐 BETA NOTICE:** This application is currently in an open Beta phase. It is hardcoded to run freely until **January 1, 2027**. After this date, a valid license key will be required to use the software.
 
+> **🆕 New in v260915:** On-Demand License Check — verify your license status at any time from Setup Mode (**🛡️ Check License**), with live `.env` re-read so new keys activate **without restarting** the application.
+
 ---
 
 ## 📦 What's Included
@@ -46,7 +48,7 @@ LICENSE_KEY=""
 | `C4_AUTO_OPEN_BROWSER` | `true` = opens browser automatically on startup |
 | `C4_POLLING_INTERVAL_MS` | How often to refresh widget data (in milliseconds) |
 | `NTP_ADDRESS` | NTP server used for secure time verification (optional) |
-| `LICENSE_KEY` | Currently bypassed by Beta Dateguard. Paste your license key here after Jan 1, 2027. |
+| `LICENSE_KEY` | Currently bypassed by Beta Dateguard. Paste your license key here after Jan 1, 2027. Use the **🛡️ Check License** button (Setup Mode) to verify it on demand — no restart needed. |
 
 ### Step 3: Run the Application
 Double-click `C4DashboardTool.exe`.
@@ -61,7 +63,7 @@ A console window will appear showing detailed licensing and connection logs, and
 The application is currently in an open Beta phase. A hardcoded Dateguard allows the app to run freely without a key until **January 1, 2027**.
 
 The bottom-right corner of the dashboard will display the current status:
-`v260810 | License valid till Jan 01, 2027`
+`v260915 | License valid till Jan 01, 2027`
 
 ### Detailed License Logging
 The application now provides detailed console logging for both the DateGuard and License verification steps, including:
@@ -73,9 +75,20 @@ The application now provides detailed console logging for both the DateGuard and
 ### Requesting a License Key
 In **Setup Mode**, click the **🔑 Request License** button in the header to open a modal displaying your Hardware IDs (OS GUID, CPU ID, MAC Address). Click **📋 Copy All IDs** to copy them to your clipboard, then send them to the developer to receive your license key.
 
+### 🛡️ On-Demand License Check (New in v260915)
+In **Setup Mode**, click the **🛡️ Check License** button to run a live license validation at any time — even during the Beta period. The result popup shows:
+- ✅ **VALID** / ❌ **INVALID** status with the exact reason (Beta period active, license verified, key empty/expired/invalid, hardware mismatch X/3, etc.)
+- The **"Valid till"** date (Beta end date or license expiry date)
+- Your **Hardware IDs** (OS GUID, CPU ID, MAC Address)
+
+The `.env` file is **re-read on every check**, so after pasting a new `LICENSE_KEY` you can verify and activate it immediately — **without restarting the application**.
+
+The **"Access Denied"** screen (shown when licensing fails) also includes a **🔄 Re-check License** button: once a valid key is pasted into `.env`, clicking it re-validates and automatically reloads the dashboard.
+
 ### Post-Beta Activation
 After January 1, 2027, the application will enforce its secure licensing system and will require a valid license key to run.
 * If you need a license key after the Beta period, please contact the developer.
+* After pasting the key into `LICENSE_KEY` in your `.env`, click **🛡️ Check License** (or **🔄 Re-check License** on the Access Denied screen) — the new key is verified and activated instantly, with no restart required.
 
 ---
 
@@ -96,6 +109,12 @@ After January 1, 2027, the application will enforce its secure licensing system 
 4. Click **"✅ Save & Close"**.
 
 ### ✨ Features & UI Improvements
+
+**🛡️ On-Demand License Check (New in v260915)**
+- **One-click verification:** the **🛡️ Check License** button in Setup Mode runs a full license check on demand.
+- **Result popup:** ✅/❌ status, exact reason, "Valid till" date, and Hardware IDs.
+- **No restart needed:** `.env` is re-read on every check, so newly pasted keys take effect immediately.
+- **Access Denied recovery:** the **🔄 Re-check License** button on the denied screen re-validates and reloads automatically.
 
 **🔍 API Explorer Widget**
 A new widget type to monitor raw API data, device variables, and system info using GET requests.
@@ -210,7 +229,7 @@ The server listens on `0.0.0.0`, allowing access from smartphones, tablets, or o
 ### 🛡️ Smart UI Features
 - **Smart Shutdown Button:** Hidden on mobile devices to prevent accidental server shutdowns.
 - **Mobile Setup Restriction:** Setup controls are hidden on mobile to keep the interface clean.
-- **Version Tag:** A small tag in the bottom-right corner (e.g., `v260810 | License valid till Jan 01, 2027`) tracks the version and beta status.
+- **Version Tag:** A small tag in the bottom-right corner (e.g., `v260915 | License valid till Jan 01, 2027`) tracks the version and beta status.
 
 ### 🔒 Security & File Locations
 - **Never share your `.env` file** — it contains your Control4 credentials.
@@ -226,13 +245,14 @@ The server listens on `0.0.0.0`, allowing access from smartphones, tablets, or o
 
 | Issue | Solution |
 |-------|----------|
-| **"Access Denied" / Shows Fingerprint** | The beta period (ending Jan 1, 2027) has ended, or the license check failed. Check the console logs for detailed error information. If the date has passed, contact the developer for a license. |
+| **"Access Denied" / Shows Fingerprint** | The beta period (ending Jan 1, 2027) has ended, or the license check failed. Check the console logs for detailed error information. Paste a valid key into `.env` and click **🔄 Re-check License** on that screen. If the date has passed and you have no key, contact the developer. |
 | **"Authentication failed"** | Handled automatically via background renewal. If it persists, check your credentials in `.env`. |
 | **"dashboard.html is missing"** | The `.exe` cannot find its embedded UI files. Ensure you downloaded the complete package and have the latest version. |
 | **"Port already in use"** | Another application or a second instance of C4DashboardTool is occupying the port. Run the **PowerShell port check** from the [Important Notes](#-check-that-your-port-is-free-before-launching) section above to identify and stop the conflicting process, or change `C4_GUI_PORT` in `.env` to a different port (e.g., `65004`). |
 | **Cannot connect from phone** | Ensure your phone and PC are on the same Wi-Fi. Allow `C4DashboardTool.exe` through Windows Firewall. |
 | **Widgets show "ERR"** | The controller may be unreachable. Check your network connection and `C4_HOST` IP address. |
 | **License verification failed in console** | Check the detailed console logs for specific error reasons (empty key, invalid key, expired key, hardware mismatch, missing public_key.pem). |
+| **New license key not recognized** | Click **🛡️ Check License** in Setup Mode (or **🔄 Re-check License** on the Access Denied screen) to force a live re-read of `.env` — no restart needed. The popup and the console logs show the detailed verification reason. |
 
 ---
 
