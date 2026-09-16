@@ -4,7 +4,7 @@ A standalone Windows application for monitoring and controlling your **Control4*
 
 > **🔐 BETA NOTICE:** This application is currently in an open Beta phase. It is hardcoded to run freely until **January 1, 2027**. After this date, a valid license key will be required to use the software.
 
-> **🆕 New in v260915:** On-Demand License Check — verify your license status at any time from Setup Mode (**🛡️ Check License**), with live `.env` re-read so new keys activate **without restarting** the application.
+> **🆕 New in v260916:** Fixed a wrong behavior of the "Copy All IDs" button .
 
 ---
 
