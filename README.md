@@ -4,7 +4,7 @@ A standalone Windows application for monitoring and controlling your **Control4*
 
 > **🔐 BETA NOTICE:** This application is currently in an open Beta phase. It is hardcoded to run freely until **January 1, 2027**. After this date, a valid license key will be required to use the software.
 
-> **🆕 New in v260916:** Fixed a wrong behavior of the "Copy All IDs" button .
+> **🆕 New in v260923:** Added **Installer PIN Protection** for Shutdown and Setup Mode buttons.
 
 ---
 
@@ -37,6 +37,7 @@ C4_AUTO_OPEN_BROWSER=true
 C4_POLLING_INTERVAL_MS=1000
 NTP_ADDRESS="89.109.251.21"
 LICENSE_KEY=""
+INSTALLER_PIN="1234"
 ```
 
 | Variable | Description |
@@ -49,6 +50,9 @@ LICENSE_KEY=""
 | `C4_POLLING_INTERVAL_MS` | How often to refresh widget data (in milliseconds) |
 | `NTP_ADDRESS` | NTP server used for secure time verification (optional) |
 | `LICENSE_KEY` | Currently bypassed by Beta Dateguard. Paste your license key here after Jan 1, 2027. Use the **🛡️ Check License** button (Setup Mode) to verify it on demand — no restart needed. |
+| `INSTALLER_PIN` | PIN code required to access **Shutdown** and **Enter Setup Mode** buttons. Change from the default `"1234"` to a secure value! |
+
+> ⚠️ **Security Note:** Change `INSTALLER_PIN` from the default `"1234"` to a unique value before deploying. This PIN is verified server-side and cannot be bypassed by manipulating the frontend.
 
 ### Step 3: Run the Application
 Double-click `C4DashboardTool.exe`.
@@ -57,13 +61,13 @@ A console window will appear showing detailed licensing and connection logs, and
 
 ---
 
-## ️ Licensing & Beta Status
+## ⚙️ Licensing & Beta Status
 
 ### Current Beta Status
 The application is currently in an open Beta phase. A hardcoded Dateguard allows the app to run freely without a key until **January 1, 2027**.
 
 The bottom-right corner of the dashboard will display the current status:
-`v260915 | License valid till Jan 01, 2027`
+`v260923 | License valid till Jan 01, 2027`
 
 ### Detailed License Logging
 The application now provides detailed console logging for both the DateGuard and License verification steps, including:
@@ -75,7 +79,7 @@ The application now provides detailed console logging for both the DateGuard and
 ### Requesting a License Key
 In **Setup Mode**, click the **🔑 Request License** button in the header to open a modal displaying your Hardware IDs (OS GUID, CPU ID, MAC Address). Click **📋 Copy All IDs** to copy them to your clipboard, then send them to the developer to receive your license key.
 
-### 🛡️ On-Demand License Check (New in v260915)
+### 🛡️ On-Demand License Check (New in v260923)
 In **Setup Mode**, click the **🛡️ Check License** button to run a live license validation at any time — even during the Beta period. The result popup shows:
 - ✅ **VALID** / ❌ **INVALID** status with the exact reason (Beta period active, license verified, key empty/expired/invalid, hardware mismatch X/3, etc.)
 - The **"Valid till"** date (Beta end date or license expiry date)
@@ -95,7 +99,7 @@ After January 1, 2027, the application will enforce its secure licensing system 
 ## 🛠️ Using the Dashboard
 
 ### First Time Setup
-1. Click **"Enter Setup Mode"** in the top-right corner.
+1. Click **"Enter Setup Mode"** in the top-right corner (PIN required — see [Installer PIN Protection](#-installer-pin-protection-new-in-v260923)).
 2. Click **"️ Add Widget"** to create your first widget.
 3. Follow the wizard:
    - **Step 1:** Choose widget type: **Button**, **Textbox**, **Combo-Button**, **MACRO**, or **🔍 API Explorer**.
@@ -108,9 +112,41 @@ After January 1, 2027, the application will enforce its secure licensing system 
    - **Step 5:** Set a label and assign to a room.
 4. Click **"✅ Save & Close"**.
 
+### 🔒 Installer PIN Protection (New in v260923)
+
+Critical actions — **⏻ Shutdown** and **Enter Setup Mode** — are now protected by a configurable **Installer PIN code**. This prevents accidental or unauthorized access to server controls, even if a user bypasses the mobile/desktop detection.
+
+**How it works:**
+- Clicking **Shutdown** or **Enter Setup Mode** triggers a **🔒 Installer Access** modal.
+- Enter the PIN configured in `INSTALLER_PIN` (`.env` file) to proceed.
+- Once authenticated, the PIN is **remembered for the current browser session** — no repeated prompts during a single maintenance session.
+- Press **Enter** on your keyboard or click **Unlock** to submit the PIN.
+- Press **Escape** or click **Cancel** to dismiss the modal.
+
+**Security layers:**
+| Layer | Protection |
+|-------|------------|
+| 🖥️ **Frontend** | PIN modal intercepts all clicks on protected buttons, regardless of device type or browser mode |
+| 🔐 **Backend** | The `/api/shutdown` endpoint independently validates the PIN in the request payload — direct API calls (e.g., `curl`, Postman) are rejected without the correct PIN |
+| 📱 **Mobile bypass prevention** | Even if a user switches their mobile browser to "Desktop view" to reveal hidden buttons, the PIN prompt still blocks access |
+
+**Configuration:**
+```env
+# In your .env file
+INSTALLER_PIN="1234"
+```
+
+> ⚠️ **Important:** Change the default PIN before deploying to a production environment. The PIN is stored in plain text in `.env` — ensure this file is not publicly accessible.
+
 ### ✨ Features & UI Improvements
 
-**🛡️ On-Demand License Check (New in v260915)**
+**🔒 Installer PIN Protection (New in v260923)**
+- **PIN-gated actions:** Shutdown and Setup Mode require a valid Installer PIN.
+- **Session memory:** Once verified, the PIN is remembered for the current browser session.
+- **Backend enforcement:** The shutdown API endpoint validates the PIN independently, preventing direct API bypass.
+- **Mobile-proof:** Works regardless of whether the user is on mobile, desktop, or has switched browser modes.
+
+**🛡️ On-Demand License Check (New in v260923)**
 - **One-click verification:** the **🛡️ Check License** button in Setup Mode runs a full license check on demand.
 - **Result popup:** ✅/❌ status, exact reason, "Valid till" date, and Hardware IDs.
 - **No restart needed:** `.env` is re-read on every check, so newly pasted keys take effect immediately.
@@ -129,7 +165,7 @@ A completely redesigned command selection interface with three distinct sources:
 - **📚 From Library** - Categorized predetermined commands (Lighting, Climate, Blinds, Audio, Scenes, Locks, Relays, Rooms, Fans) with detailed parameter descriptions and examples
 - **✏️ Custom** - Freestyle command entry for any Control4 API command
 
-** Enhanced Test Modal**
+**🧪 Enhanced Test Modal**
 Replaced small toast notifications with a full-sized popup for test results.
 - **Clear Status** - Shows ✅ success or ❌ failure with descriptive titles
 - **Full Result Display** - Complete test output without truncation
@@ -177,6 +213,7 @@ A hybrid widget that acts as a clickable button to send a command while simultan
 **📱 Smart Mobile UI**
 - **Smart Shutdown Button:** Hidden on mobile devices to prevent accidental server shutdowns.
 - **Mobile Setup Restriction:** Setup controls are hidden on mobile to keep the interface clean.
+- **PIN-Protected Fallback:** Even if a user switches to Desktop view on mobile, the Installer PIN still blocks access to Shutdown and Setup Mode.
 - **Cleaner Pure Buttons:** Standard Buttons are rendered as clean, compact cards.
 
 **🏠 Room Management & Reordering**
@@ -211,7 +248,7 @@ Get-NetTCPConnection -LocalPort 65003 -ErrorAction SilentlyContinue | ForEach-Ob
 ```
 
 - **No output** = the port is free ✅ — you're good to launch.
-- **Output appears** = something is already using the port . You can either:
+- **Output appears** = something is already using the port ⚠️. You can either:
   1. **Kill the process:** `Stop-Process -Id <PID> -Force` (replace `<PID>` with the number shown).
   2. **Change the port:** Edit `C4_GUI_PORT` in your `.env` file to a different value (e.g., `65004`).
 
@@ -220,24 +257,28 @@ Get-NetTCPConnection -LocalPort 65003 -ErrorAction SilentlyContinue | ForEach-Ob
 ### 🔄 Automatic Token Renewal
 Control4 authentication tokens expire every 24 hours. This application features **background auto-renewal**. If a token expires, the system silently catches the error, re-authenticates, and retries. You will never need to manually restart the app.
 
-###  Mobile & Local Network Access
+### 📱 Mobile & Local Network Access
 The server listens on `0.0.0.0`, allowing access from smartphones, tablets, or other PCs on your local Wi-Fi.
 1. Find your PC's local IP address (e.g., `192.168.1.50`).
 2. Navigate to `http://192.168.1.50:65003` on your mobile device.
 3. **Pro Tip:** Tap the Chrome menu and select **"Add to Home screen"** to install it as a full-screen web app!
 
+> **Note:** On mobile devices, the Shutdown and Setup Mode buttons are hidden. However, even if a user switches their browser to Desktop view, the **Installer PIN** will still protect these actions.
+
 ### 🛡️ Smart UI Features
 - **Smart Shutdown Button:** Hidden on mobile devices to prevent accidental server shutdowns.
 - **Mobile Setup Restriction:** Setup controls are hidden on mobile to keep the interface clean.
-- **Version Tag:** A small tag in the bottom-right corner (e.g., `v260915 | License valid till Jan 01, 2027`) tracks the version and beta status.
+- **Installer PIN Gate:** Critical buttons require PIN verification regardless of device type or browser mode.
+- **Version Tag:** A small tag in the bottom-right corner (e.g., `v260923 | License valid till Jan 01, 2027`) tracks the version and beta status.
 
 ### 🔒 Security & File Locations
-- **Never share your `.env` file** — it contains your Control4 credentials.
+- **Never share your `.env` file** — it contains your Control4 credentials and Installer PIN.
 - The `.exe` looks for config files in the **same folder** as itself. If you move the `.exe`, you must move the `.env` and `dashboard_config.json` with it.
-- The `templates/dashboard.html` file is now **embedded inside the .exe** and do not need to be distributed separately.
+- The `templates/dashboard.html` file is now **embedded inside the .exe** and does not need to be distributed separately.
+- **Change the default `INSTALLER_PIN`** from `"1234"` to a unique value before deploying to a client site.
 
 ### 🔄 Updates
-- When a new version of `C4DashboardToolexp_xxxxxx.exe` is released, simply replace the old `.exe` with the new one. Keep your existing `.env` and `dashboard_config.json` files.
+- When a new version of `C4DashboardTool.exe` is released, simply replace the old `.exe` with the new one. Keep your existing `.env` and `dashboard_config.json` files.
 
 ---
 
@@ -253,6 +294,9 @@ The server listens on `0.0.0.0`, allowing access from smartphones, tablets, or o
 | **Widgets show "ERR"** | The controller may be unreachable. Check your network connection and `C4_HOST` IP address. |
 | **License verification failed in console** | Check the detailed console logs for specific error reasons (empty key, invalid key, expired key, hardware mismatch, missing public_key.pem). |
 | **New license key not recognized** | Click **🛡️ Check License** in Setup Mode (or **🔄 Re-check License** on the Access Denied screen) to force a live re-read of `.env` — no restart needed. The popup and the console logs show the detailed verification reason. |
+| **PIN not working / "Incorrect PIN"** | Verify that `INSTALLER_PIN` is set correctly in your `.env` file. Restart the application after changing the PIN value. The PIN is case-sensitive and must match exactly. |
+| **Forgot Installer PIN** | Open the `.env` file in a text editor, change `INSTALLER_PIN` to a new value, and restart the application. |
+| **Shutdown button does nothing after PIN** | Check the browser console (F12) for errors. Ensure the backend is running and the PIN in `.env` matches what you entered. |
 
 ---
 
@@ -275,6 +319,7 @@ This project is **unofficial** and not affiliated with, endorsed by, or supporte
 - **Run only one instance** of `C4DashboardTool.exe` at a time. A second instance will fail to start because the port is already occupied by the first. Use the [PowerShell port check](#-check-that-your-port-is-free-before-launching) if you're unsure whether an instance is already running.
 - **Firewall:** If other devices can't connect, allow `C4DashboardTool.exe` through Windows Firewall for Private networks.
 - **Performance:** Keep the number of active Textbox/Combo widgets reasonable to minimize polling load on your Control4 controller.
+- **PIN Security:** Treat `INSTALLER_PIN` like a password. Do not share it with end users. Only installers should know the PIN.
 
 ---
 
@@ -287,7 +332,7 @@ Inspired by the brilliant work of #lawtancool and his predecessors. Uses some co
 💡 Alternative way to run the application
 DOCKER image — visit [andebox/c4dashboardtoolexp](https://hub.docker.com/r/andebox/c4dashboardtoolexp) to get an image.
 
-
+---
 
 ## 📄 License
 
